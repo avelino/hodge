@@ -5,6 +5,12 @@ from setuptools import setup
 
 REQUIREMENTS = [i.strip() for i in open("requirements.txt").readlines()]
 
+entry_points = {
+    'console_scripts': [
+        "hodge = hodge:main"
+    ]
+}
+
 classifiers = [
     "Framework :: Bottle",
     'Development Status :: 3 - Alpha',
@@ -36,10 +42,7 @@ setup(name='hodge',
       download_url="{0}/tarball/master".format(url),
       license="MIT",
       install_requires=REQUIREMENTS,
-      entry_points={
-          'console_scripts': ["hodge = hodge:main"]
-      },
-      py_modules=['hodge'],
-      scripts=['hodge.py'],
+      entry_points=entry_points,
+      packages=["hodge"],
       include_package_data=True,
       zip_safe=False)

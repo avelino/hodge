@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
+import io
 import click
 from cookiecutter.main import cookiecutter
 from slugify import slugify
-from jinja2 import Environment, PackageLoader
+from jinja2 import Template
+from datetime import datetime
+
+from .templates import NEWPOST
 
 
 @click.group()
@@ -38,10 +42,28 @@ def newpost():
         exit(0)
 
     click.echo(u'Hodge new post create...')
+
+    date = datetime.now()
+
     obj = {}
     obj["title"] = click.prompt('Title', type=str)
-    obj["slug"] = slugify(obj["title"])
-    obj["tags"] = click.prompt('Tags (hodge, static)', type=str)
+    slug = slugify(obj["title"])
+    obj["slug"] = click.prompt('Slug', type=str, default=slug)
+    obj["tags"] = click.prompt('Tags (hodge, static)', type=str, default="")
+    obj["date"] = click.prompt(
+        'Date', type=str,
+        default=date.strftime("%Y/%m/%d %H:%M:%S"))
+    obj["file"] = click.prompt(
+        "File name",
+        type=str,
+        default=date.strftime("%Y_%m_%d_{}.md".format(obj["slug"])))
+
+    tmp = Template(NEWPOST)
+    if not os.path.isdir("./content"):
+        os.mkdir("./content")
+
+    with io.open("./content/{}".format(obj["file"]), "w+") as f:
+        f.write(tmp.render(**obj))
 
 
 def main():

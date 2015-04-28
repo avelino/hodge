@@ -1,6 +1,6 @@
-# {{ title }}
+NEWPOST = """# {{ title }}
 
-- date: 2015-04-27 22:10
+- date: {{ date }}
 - author: avelino
 - category: hodge
 - tags: {{ tags }}
@@ -8,4 +8,4 @@
 
 -------
 
-Welcome to Hodge.
+"""
