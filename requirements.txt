@@ -1,4 +1,5 @@
 cookiecutter
-click<4.0
+click==3.3
 toml
 jinja2
+python-slugify
