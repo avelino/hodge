@@ -40,6 +40,6 @@ Hodge is a static cms generator in python, the difference is that we give a free
 
 ## Templates feature
 
-- Include file (read markdown)_
+- Include file (read markdown)
 - Content bock (group news)
 - Query set, dynamic populate "Content block"
