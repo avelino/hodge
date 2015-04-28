@@ -1,13 +1,13 @@
 # hodge
 
-Hodge is a static cms generator in python, the difference is that we give a free hosting for your cms (if you want)!
+Hodge is a static site generator in python, the difference is that we give a free hosting for your blog (if you want)!
 
 
 ## Idea
 
-### Start new project
+### Start new site
 
-    hodge init <project-name>
+    hodge init <site-name>
 
 
 ### Create new content
@@ -33,7 +33,7 @@ Hodge is a static cms generator in python, the difference is that we give a free
     Writting text here!
 
 
-### Generate html's
+### Generate static html
 
     hodge build
 
@@ -41,5 +41,5 @@ Hodge is a static cms generator in python, the difference is that we give a free
 ## Templates feature
 
 - Include file (read markdown)
-- Content bock (group news)
+- Content block (group news)
 - Query set, dynamic populate "Content block"
