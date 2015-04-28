@@ -4,5 +4,5 @@ date: {{ date }}
 tags: [{{ slug }}]
 ---
 
-Testando lero lero
+Writting text here!
 """

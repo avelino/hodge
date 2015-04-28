@@ -7,7 +7,7 @@ from cookiecutter.main import cookiecutter
 from slugify import slugify
 from jinja2 import Template
 from datetime import datetime
-import markdown
+import markdown2
 
 from .templates import NEWPOST
 from .utils import walk_dir
@@ -76,14 +76,10 @@ def build():
 
     click.echo(u'Hodge build...')
 
-    extensions = ['markdown.extensions.meta']
-    md = markdown.Markdown(output_format="html5", extensions=extensions)
     for filename in walk_dir("./content"):
-        md.reset()
         text = io.open(filename, "rb").read()
-        html = md.convert(text)
-        print(md.Meta)
-        for k, v in md.Meta.items():
+        html = markdown2.markdown(text, extras=["metadata"])
+        for k, v in html.metadata:
             pass
 
         print(html)

@@ -3,4 +3,4 @@ click==3.3
 toml
 jinja2
 python-slugify
-markdown
+markdown2
