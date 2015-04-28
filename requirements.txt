@@ -1,0 +1,4 @@
+cookiecutter
+click<4.0
+toml
+jinja2
