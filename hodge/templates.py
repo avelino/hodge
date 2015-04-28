@@ -1,11 +1,8 @@
-NEWPOST = """# {{ title }}
+NEWPOST = """---
+title: {{ title }}
+date: {{ date }}
+tags: [{{ slug }}]
+---
 
-- date: {{ date }}
-- author: avelino
-- category: hodge
-- tags: {{ tags }}
-- slug: {{ slug }}
-
--------
-
+Testando lero lero
 """

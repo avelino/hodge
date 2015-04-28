@@ -7,8 +7,10 @@ from cookiecutter.main import cookiecutter
 from slugify import slugify
 from jinja2 import Template
 from datetime import datetime
+import markdown
 
 from .templates import NEWPOST
+from .utils import walk_dir
 
 
 @click.group()
@@ -62,8 +64,29 @@ def newpost():
     if not os.path.isdir("./content"):
         os.mkdir("./content")
 
-    with io.open("./content/{}".format(obj["file"]), "w+") as f:
-        f.write(tmp.render(**obj))
+    with io.open("./content/{}".format(obj["file"]), "wb") as f:
+        f.write(tmp.render(**obj).encode())
+
+
+@cmds.command()
+def build():
+    if not os.path.isfile("./hodge.toml"):
+        click.echo(u'hodge.toml (config) not exist!')
+        exit(0)
+
+    click.echo(u'Hodge build...')
+
+    extensions = ['markdown.extensions.meta']
+    md = markdown.Markdown(output_format="html5", extensions=extensions)
+    for filename in walk_dir("./content"):
+        md.reset()
+        text = io.open(filename, "rb").read()
+        html = md.convert(text)
+        print(md.Meta)
+        for k, v in md.Meta.items():
+            pass
+
+        print(html)
 
 
 def main():
