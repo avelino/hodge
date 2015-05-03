@@ -4,11 +4,14 @@ import os
 import io
 import shutil
 import click
+import http.server
+import socketserver
+import markdown2
 from cookiecutter.main import cookiecutter
 from slugify import slugify
 from jinja2 import Template, Environment, FileSystemLoader
 from datetime import datetime
-import markdown2
+from click.testing import CliRunner
 
 from .utils import walk_dir
 
@@ -38,24 +41,24 @@ def init(site_name):
 
 
 @cmds.command()
-def newpost():
+@click.option('--title', type=str, prompt=True)
+@click.option('--date', type=str,
+              default=datetime.now(),
+              prompt=True)
+def newpost(title, date):
     if not os.path.isfile("./hodge.toml"):
         click.echo(u'hodge.toml (config) not exist!')
         exit(0)
 
     click.echo(u'Hodge new post create...')
 
-    date = datetime.now()
-
     obj = {}
-    obj["title"] = click.prompt('Title', type=str)
+    obj["title"] = title
+    obj["date"] = date.strftime("%Y/%m/%d %H:%M:%S")
     slug = slugify(obj["title"])
     obj["slug"] = click.prompt('Slug', type=str, default=slug)
     obj["tags"] = click.prompt('Tags (hodge, static)', type=str,
                                default=", ".join(obj["title"].split(" ")))
-    obj["date"] = click.prompt(
-        'Date', type=str,
-        default=date.strftime("%Y/%m/%d %H:%M:%S"))
     obj["file"] = click.prompt(
         "File name",
         type=str,
@@ -68,6 +71,8 @@ def newpost():
 
     with io.open("./content/{}".format(obj["file"]), "wb") as f:
         f.write(tmp.render(**obj).encode())
+
+    return obj
 
 
 @cmds.command()
@@ -91,6 +96,7 @@ def build():
         html = markdown2.markdown(text, extras=["metadata"])
         meta = html.metadata
         content = {"content": html, "meta": meta}
+        content["meta"]["uri"] = "/{}.html".format(meta.get("slug"))
 
         if not os.path.isdir("./build"):
             os.mkdir("./build")
@@ -106,6 +112,25 @@ def build():
     content = {"posts": index}
     with open("./build/index.html", "w") as fh:
         fh.write(template_index.render(**content))
+
+
+@cmds.command()
+@click.argument('port', type=int, default=3000)
+def server(port):
+    click.echo(u'Hodge run...')
+
+    # Run Build
+    runner = CliRunner()
+    runner.invoke(build)
+
+    # Open folder build
+    os.chdir("build")
+
+    # Run simple http server
+    Handler = http.server.SimpleHTTPRequestHandler
+    httpd = socketserver.TCPServer(("", port), Handler)
+    click.echo(u'Serving HTTP on http://127.0.0.1:{}'.format(port))
+    httpd.serve_forever()
 
 
 def main():
