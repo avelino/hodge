@@ -1,7 +1,8 @@
 NEWPOST = """---
 title: {{ title }}
 date: {{ date }}
-tags: [{{ slug }}]
+tags: [{{ tags }}]
+slug: {{ slug }}
 ---
 
 Writting text here!
