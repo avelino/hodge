@@ -24,10 +24,12 @@ Hodge is a static site generator in python, the difference is that we give a fre
 
 ### Example file generate
 
+
     ---
     title: {{ title }}
     date: {{ date }}
-    tags: {{ slug }}
+    tags: [{{ tags }}]
+    slug: {{ slug }}
     ---
 
     Writting text here!
