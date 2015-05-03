@@ -80,9 +80,11 @@ def build():
     template_path = os.path.join("theme", "default")
     env = Environment(autoescape=True,
                       loader=FileSystemLoader(template_path))
-    template = env.get_template('index.html')
+    template_content = env.get_template('content.html')
 
     shutil.rmtree("./build", ignore_errors=True)
+
+    index = []
 
     for filename in walk_dir("./content"):
         text = io.open(filename, "rb").read()
@@ -94,9 +96,16 @@ def build():
             os.mkdir("./build")
 
         with open("./build/{}.html".format(meta.get("slug")), "w") as fh:
-            fh.write(template.render(**content))
+            fh.write(template_content.render(**content))
 
         click.echo("- {}".format(meta.get("slug")))
+
+        index.append(content)
+
+    template_index = env.get_template('index.html')
+    content = {"posts": index}
+    with open("./build/index.html", "w") as fh:
+        fh.write(template_index.render(**content))
 
 
 def main():
