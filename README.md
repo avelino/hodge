@@ -1,5 +1,7 @@
 # hodge
 
+[![Build Status](https://travis-ci.org/avelino/hodge.svg)](https://travis-ci.org/avelino/hodge)
+
 Hodge is a static site generator in python, the difference is that we give a free hosting for your blog (if you want)!
 
 
