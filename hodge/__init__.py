@@ -10,7 +10,6 @@ from jinja2 import Template, Environment, FileSystemLoader
 from datetime import datetime
 import markdown2
 
-from .templates import NEWPOST
 from .utils import walk_dir
 
 
@@ -62,7 +61,8 @@ def newpost():
         type=str,
         default=date.strftime("%Y_%m_%d_{}.md".format(obj["slug"])))
 
-    tmp = Template(NEWPOST)
+    template_path = os.path.join(os.path.dirname(__file__), "templates")
+    tmp = Template(io.open(os.path.join(template_path, "newpost.md")).read())
     if not os.path.isdir("./content"):
         os.mkdir("./content")
 
