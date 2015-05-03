@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 import os
 import io
+import shutil
 import click
 from cookiecutter.main import cookiecutter
 from slugify import slugify
-from jinja2 import Template
+from jinja2 import Template, Environment, FileSystemLoader
 from datetime import datetime
 import markdown2
 
@@ -51,7 +52,8 @@ def newpost():
     obj["title"] = click.prompt('Title', type=str)
     slug = slugify(obj["title"])
     obj["slug"] = click.prompt('Slug', type=str, default=slug)
-    obj["tags"] = click.prompt('Tags (hodge, static)', type=str, default="")
+    obj["tags"] = click.prompt('Tags (hodge, static)', type=str,
+                               default=", ".join(obj["title"].split(" ")))
     obj["date"] = click.prompt(
         'Date', type=str,
         default=date.strftime("%Y/%m/%d %H:%M:%S"))
@@ -75,14 +77,26 @@ def build():
         exit(0)
 
     click.echo(u'Hodge build...')
+    template_path = os.path.join("theme", "default")
+    env = Environment(autoescape=True,
+                      loader=FileSystemLoader(template_path))
+    template = env.get_template('index.html')
+
+    shutil.rmtree("./build", ignore_errors=True)
 
     for filename in walk_dir("./content"):
         text = io.open(filename, "rb").read()
         html = markdown2.markdown(text, extras=["metadata"])
-        for k, v in html.metadata:
-            pass
+        meta = html.metadata
+        content = {"content": html, "meta": meta}
 
-        print(html)
+        if not os.path.isdir("./build"):
+            os.mkdir("./build")
+
+        with open("./build/{}.html".format(meta.get("slug")), "w") as fh:
+            fh.write(template.render(**content))
+
+        click.echo("- {}".format(meta.get("slug")))
 
 
 def main():
